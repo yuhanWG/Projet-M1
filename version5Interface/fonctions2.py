@@ -45,7 +45,7 @@ def newPMR(m,matrice,pmr,delete,q):
     matrice=np.delete(matrice,delete,0)
     pmr=np.delete(pmr,delete,0)
     pmr=np.delete(pmr,delete,1)
-    #print(pmr)
+    print("old pmr is",pmr)
     a,b=pmr.shape
     for i in range(a):
         for j in range(b):
