@@ -10,7 +10,6 @@ from fonctions2 import *
 
 ####Voici des donnees des voitures qu'on va utiliser
 N=14
-C=5
 doc="Donnees/tabNDS_5_14_Voiture"
 #enregistre les marques des voitures
 img=["tipo","alfa","sunny","mazda","colt","corolla","civic","astra","escort","R19","P30916","P309","galant","R21t"]
@@ -45,7 +44,7 @@ class MainUi(QMainWindow):
 		self.matrice_mr,self.worst_ad=max_regret(self.pmr,self.label)
 		self.sol=np.argmin(self.matrice_mr)
 		self.pire_ad=int(self.worst_ad[self.sol])
-		#print(self.label[self.sol],self.label[self.pire_ad])
+		print(self.label[self.sol],self.label[self.pire_ad])
 		self.cpt=0
 
 		###########################
@@ -56,13 +55,9 @@ class MainUi(QMainWindow):
 		self.widget=QWidget()
 		#self.infol=self.getInfos(self.sol,self.matrice[self.sol])
 		#self.infor=self.getInfos(self.pire_ad,self.matrice[self.pire_ad])
-		self.vleft=QVBoxLayout()
-		self.vright=QVBoxLayout()
 		if(self.sol!=self.pire_ad):
 			self.btn1=QToolButton()
 			self.btn2=QToolButton()
-			self.btn1.setObjectName("left")
-			self.btn2.setObjectName("right")
 			self.img1=img[self.sol]+".jpg"
 			self.img2=img[self.pire_ad]+".jpg"
 			#print(img1,img2)
@@ -71,14 +66,14 @@ class MainUi(QMainWindow):
 			self.btn1.setIconSize(QSize(200,200))
 			self.btn2.setIconSize(QSize(200,200))
 
-			self.infol=self.initInfos(self.sol,self.matrice[self.sol])
-			self.infor=self.initInfos(self.pire_ad,self.matrice[self.pire_ad])
+			self.infol=self.getInfos(self.sol,self.matrice[self.sol])
+			self.infor=self.getInfos(self.pire_ad,self.matrice[self.pire_ad])
 
 			####partie layout####
 			
 			self.hbox=QHBoxLayout()
-			#self.vleft=QVBoxLayout()
-			#self.vright=QVBoxLayout()
+			self.vleft=QVBoxLayout()
+			self.vright=QVBoxLayout()
 
 			self.vleft.addWidget(self.btn1)
 			self.vleft.addLayout(self.infol)
@@ -110,6 +105,7 @@ class MainUi(QMainWindow):
 
 		self.setCentralWidget(self.widget)
 
+
 	def optimiser(self,prefere,delete):
 	#def optimiser(self,params):
 		#print(params)
@@ -138,30 +134,18 @@ class MainUi(QMainWindow):
 		self.btn1.setIcon(QIcon('./image/'+self.img1))
 		self.btn2.setIcon(QIcon('./image/'+self.img2))
 		#je pense que c'est cette partie qui ne fonctionne pas
-
-		
-		#self.vleft=self.vleft.removeItem(self.infol)
-		#self.vright=self.vright.removeItem(self.infor)
-		self.vleft.itemAt(1).setParent(None)
-		self.vright.itemAt(1).setParent(None)
-
-		self.infol=QVBoxLayout()
-		self.infor=QVBoxLayout()
-		self.infol=self.initInfos(self.sol,self.matrice[self.sol,:])
-		self.infor=self.initInfos(self.pire_ad,self.matrice[self.pire_ad,:])
-
-		self.vleft.addLayout(self.infol)
-		self.vright.addLayout(self.infor)
+		self.infol=self.getInfos(self.sol,self.matrice[self.sol,:])
+		self.infor=self.getInfos(self.pire_ad,self.matrice[self.pire_ad,:])
 
 		#print(self.infor)
 		QGuiApplication.processEvents()
 		self.widget.update()
-		self.widget.repaint()
 
 		self.cpt+=1
 		
 
-	def initInfos(self,id,infos):
+	def getInfos(self,id,infos):
+	#en utilisant les informations donnees, getInfos va retourner un QVBoxlayout
 		coordonne=QVBoxLayout()
 		l1=QLabel()
 		l2=QLabel()
@@ -185,7 +169,6 @@ class MainUi(QMainWindow):
 		freins.setText("freins: "+str(-infos[3]))
 		tdr.setText("tenue de route: "+str(-infos[4]))
 		
-		print("tetx",l1.text(),l2.text())
 		coordonne.addWidget(l1)
 		coordonne.addWidget(l2)
 		coordonne.addWidget(cout)
@@ -195,7 +178,6 @@ class MainUi(QMainWindow):
 		coordonne.addWidget(tdr)
 
 		return coordonne
-
 
 
 
