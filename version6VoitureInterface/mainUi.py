@@ -10,7 +10,7 @@ from fonctions2 import *
 
 ####Voici des donnees des voitures qu'on va utiliser
 N=14
-C=5
+C=7
 doc="Donnees/tabNDS_5_14_Voiture"
 #enregistre les marques des voitures
 img=["tipo","alfa","sunny","mazda","colt","corolla","civic","astra","escort","R19","P30916","P309","galant","R21t"]
@@ -22,6 +22,10 @@ class MainUi(QMainWindow):
 		super(MainUi,self).__init__(parent)
 		self.resize(650,480)
 		self.setStyleSheet('QMainWindow{background-color:rgb(244,167,185)}')
+
+		#nouvelle
+		self.labelleft=self.initlist()
+		self.labelright=self.initlist()
 
 		nom_file=doc+'.txt'
 		self.matrice=readFile(nom_file)
@@ -54,8 +58,7 @@ class MainUi(QMainWindow):
 		#le contenu dans les deux layout self.vleft et self.vright 
 		###########################
 		self.widget=QWidget()
-		#self.infol=self.getInfos(self.sol,self.matrice[self.sol])
-		#self.infor=self.getInfos(self.pire_ad,self.matrice[self.pire_ad])
+		
 		self.vleft=QVBoxLayout()
 		self.vright=QVBoxLayout()
 		if(self.sol!=self.pire_ad):
@@ -71,8 +74,10 @@ class MainUi(QMainWindow):
 			self.btn1.setIconSize(QSize(200,200))
 			self.btn2.setIconSize(QSize(200,200))
 
-			self.infol=self.initInfos(self.sol,self.matrice[self.sol])
-			self.infor=self.initInfos(self.pire_ad,self.matrice[self.pire_ad])
+			#self.infol=
+			self.initInfos("sol",self.sol,self.matrice[self.sol])
+			#self.infor=
+			self.initInfos("pire_ad",self.pire_ad,self.matrice[self.pire_ad])
 
 			####partie layout####
 			
@@ -81,18 +86,21 @@ class MainUi(QMainWindow):
 			#self.vright=QVBoxLayout()
 
 			self.vleft.addWidget(self.btn1)
-			self.vleft.addLayout(self.infol)
-
+			#self.vleft.addLayout(self.infol)
 			self.vright.addWidget(self.btn2)
-			self.vright.addLayout(self.infor)
+			for i in range(C):
+				self.vleft.addWidget(self.labelleft[i])
+				self.vright.addWidget(self.labelright[i])
+			
+			#self.vright.addLayout(self.infor)
 
 			self.hbox.addLayout(self.vleft)
 			self.hbox.addLayout(self.vright)
 			self.widget.setLayout(self.hbox)
 			#self.setCentralWidget(self.widget)
 			####partie signal et slot####
-			self.btn1.clicked.connect(lambda :self.optimiser(self.sol,self.pire_ad))
-			self.btn2.clicked.connect(lambda:self.optimiser(self.pire_ad,self.sol))
+			self.btn1.clicked.connect(lambda:self.optimiser("sol",self.sol,self.pire_ad))
+			self.btn2.clicked.connect(lambda:self.optimiser("pire_ad",self.pire_ad,self.sol))
 			QGuiApplication.processEvents()
 
 		else:
@@ -110,7 +118,7 @@ class MainUi(QMainWindow):
 
 		self.setCentralWidget(self.widget)
 
-	def optimiser(self,prefere,delete):
+	def optimiser(self,label,prefere,delete):
 	#def optimiser(self,params):
 		#print(params)
 		#prefere=params[0]
@@ -139,11 +147,14 @@ class MainUi(QMainWindow):
 		self.btn2.setIcon(QIcon('./image/'+self.img2))
 		#je pense que c'est cette partie qui ne fonctionne pas
 
-		
-		#self.vleft=self.vleft.removeItem(self.infol)
-		#self.vright=self.vright.removeItem(self.infor)
+		#nouvelle
+		self.initInfos("sol",self.sol,self.matrice[self.sol,:])
+		self.initInfos("pire_ad",self.pire_ad,self.matrice[self.pire_ad,:])
+		'''
 		self.vleft.itemAt(1).setParent(None)
 		self.vright.itemAt(1).setParent(None)
+		self.vleft.removeWidget(self.)
+
 
 		self.infol=QVBoxLayout()
 		self.infor=QVBoxLayout()
@@ -152,6 +163,7 @@ class MainUi(QMainWindow):
 
 		self.vleft.addLayout(self.infol)
 		self.vright.addLayout(self.infor)
+'''
 
 		#print(self.infor)
 		QGuiApplication.processEvents()
@@ -161,7 +173,8 @@ class MainUi(QMainWindow):
 		self.cpt+=1
 		
 
-	def initInfos(self,id,infos):
+	def initInfos(self,label,id,infos):
+		'''
 		coordonne=QVBoxLayout()
 		l1=QLabel()
 		l2=QLabel()
@@ -195,8 +208,40 @@ class MainUi(QMainWindow):
 		coordonne.addWidget(tdr)
 
 		return coordonne
+		'''
+		if(label=="sol"):
+			if(self.label[id]<9):
+				print("hello "+"a0"+str(self.label[id]))
+				self.labelleft[0].setText("a0"+str(self.label[id]))
+			else:
+				self.labelleft[0].setText("a"+str(self.label[id]))
+			self.labelleft[1].setText("marque: "+img[id])
+			self.labelleft[2].setText("cout: "+str(infos[0])+"€")
+			self.labelleft[3].setText("accel: "+str(infos[1]))
+			self.labelleft[4].setText("reprise: "+str(infos[2]))
+			self.labelleft[5].setText("freins: "+str(-infos[3]))
+			self.labelleft[6].setText("tenue de route: "+str(-infos[4]))
+		else:
+			if(self.label[id]<9):
+				print("hello "+"a0"+str(self.label[id]))
+				self.labelright[0].setText("a0"+str(self.label[id]))
+			else:
+				self.labelright[0].setText("a"+str(self.label[id]))
+			self.labelright[1].setText("marque: "+img[id])
+			self.labelright[2].setText("cout: "+str(infos[0])+"€")
+			self.labelright[3].setText("accel: "+str(infos[1]))
+			self.labelright[4].setText("reprise: "+str(infos[2]))
+			self.labelright[5].setText("freins: "+str(-infos[3]))
+			self.labelright[6].setText("tenue de route: "+str(-infos[4]))
 
 
+	def initlist(self):
+		l=[]
+		for i in range(C):
+			l.append(QLabel())
+		print(len(l))
+
+		return l
 
 
 
