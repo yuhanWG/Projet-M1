@@ -6,7 +6,9 @@ import numpy as np
 import sys
 from gurobipy import * 
 from fonctions2 import *
-import endPage
+import endPage2
+
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 ####Voici des donnees des voitures qu'on va utiliser
 '''
@@ -34,6 +36,9 @@ class MainUi(QMainWindow):
 		nom_critere=self.path+'/critere'+'.txt'
 		nom_img=self.path+'/img'+'.txt'
 
+		#05/09
+		#self.resize(900,580)
+
 		self.matrice=readFile(nom_file)
 		self.critere=readCritere(nom_critere)
 		self.img=readCritere(nom_img)
@@ -45,8 +50,7 @@ class MainUi(QMainWindow):
 		self.N=len(self.img)
 
 
-		self.resize(650,480)
-		self.setStyleSheet('QMainWindow{background-color:rgb(244,167,185)}')
+		self.resize(700,350)
 
 		#nouvelle
 		self.labelleft=self.initlist()
@@ -73,7 +77,55 @@ class MainUi(QMainWindow):
 		
 		self.cpt=0
 
-		self.widget=QWidget()
+		self.centralwidget=QtWidgets.QWidget(self)
+		#self.widget=QtWidgets.QWidget(self)
+		#05/09
+		self.widget1=QtWidgets.QWidget(self.centralwidget)
+		self.widget2=QtWidgets.QWidget(self.centralwidget)
+
+
+		self.setObjectName("MainWindow")
+		self.widget1.setObjectName("widget1")
+		self.widget2.setObjectName("widget2")
+		self.centralwidget.setObjectName("central")
+		
+		#self.setStyleSheet('QMainWindow#MainWindow{border-image:url(bg.png)}')
+		#self.setStyleSheet('QWidget#widget{background-color:rgb(255,0,0)}')
+		#
+		#self.setStyleSheet('QWidget#widget{border-image:url(bg.png)}')
+		self.centralwidget.setStyleSheet("QWidget#central{border-image:url(bg2.png)}")
+		#self.widget1.setStyleSheet("background-color:white;")
+		self.widget2.setStyleSheet(
+			"QWidget#widget2{\n"
+			"background-color:black\n"
+			"}\n"
+			"QPushButton{\n"
+				"font: 12pt \"Impact\";\n"
+			"}\n"
+			"QComboBox{\n"
+				"font: 12pt \"Impact\";\n"
+			"}\n"
+			"QLabel{\n"
+				"color:white;\n"
+				"font: 16pt \"Impact\";\n"
+			"}"
+			)
+		self.widget1.setStyleSheet(
+			"QWidget#widget1{\n"
+			"background-color:black\n"
+			"}\n"
+			"QPushButton{\n"
+				"font: 12pt \"Impact\";\n"
+			"}\n"
+			"QComboBox{\n"
+				"font: 12pt \"Impact\";\n"
+			"}\n"
+			"QLabel{\n"
+				"color:white;\n"
+				"font: 16pt \"Impact\";\n"
+			"}"
+			)
+
 		
 		self.vleft=QVBoxLayout()
 		self.vright=QVBoxLayout()
@@ -90,8 +142,8 @@ class MainUi(QMainWindow):
 			#05/04
 			self.btn1.setIcon(QIcon(self.img_path+self.img1))
 			self.btn2.setIcon(QIcon(self.img_path+self.img2))
-			self.btn1.setIconSize(QSize(200,200))
-			self.btn2.setIconSize(QSize(200,200))
+			self.btn1.setIconSize(QSize(200,150))
+			self.btn2.setIconSize(QSize(200,150))
 
 			
 			self.initInfos("sol",self.sol,self.matrice[self.sol],self.critere)
@@ -101,27 +153,47 @@ class MainUi(QMainWindow):
 			
 			self.hbox=QHBoxLayout()
 
-			self.vleft.addWidget(self.btn1)
+			#05/08
+			self.vleft.addWidget(self.btn1,Qt.AlignHCenter)
 			
-			self.vright.addWidget(self.btn2)
+			self.vright.addWidget(self.btn2,Qt.AlignHCenter)
 
 			for i in range(self.C):
 				self.vleft.addWidget(self.labelleft[i])
 				self.vright.addWidget(self.labelright[i])
 
-			self.hbox.addLayout(self.vleft)
-			self.hbox.addLayout(self.vright)
+			
+			self.widget1.setLayout(self.vleft)
+			self.widget2.setLayout(self.vright)
 
 
-			self.widget.setLayout(self.hbox)
-			self.setCentralWidget(self.widget)
+			#self.hbox.addLayout(self.vleft)
+			#self.hbox.addLayout(self.vright)
+			self.hbox.addWidget(self.widget1)
+			self.hbox.addWidget(self.widget2)
+			#05/09
+			self.hbox.setContentsMargins(150, 50, 10, 50)
+			#self.hbox.setSpacing(50)
+			#self.hbox.addStretch(10)
+			self.setWindowTitle("Quiz Time")
+			#self.widget.setLayout(self.hbox)
+			#self.setCentralWidget(self.widget)
+			self.centralwidget.setLayout(self.hbox)
+			self.setCentralWidget(self.centralwidget)
+
+
+
 			####partie signal et slot####
 			self.btn1.clicked.connect(lambda:self.optimiser("sol",self.sol,self.pire_ad))
 			self.btn2.clicked.connect(lambda:self.optimiser("pire_ad",self.pire_ad,self.sol))
 			QGuiApplication.processEvents()
 
 
-		self.setCentralWidget(self.widget)
+		#self.setCentralWidget(self.widget)
+
+	#05/09
+	def layout(self):
+		pass
 
 	def optimiser(self,label,prefere,delete):
 		print(prefere,delete)
@@ -152,8 +224,10 @@ class MainUi(QMainWindow):
 			self.initInfos("pire_ad",self.pire_ad,self.matrice[self.pire_ad,:],self.critere)
 
 			QGuiApplication.processEvents()
-			self.widget.update()
-			self.widget.repaint()
+			self.widget1.update()
+			self.widget2.update()
+			self.centralwidget.update()
+			#self.widget.repaint()
 
 			self.cpt+=1
 		else:
@@ -242,6 +316,17 @@ class MainUi(QMainWindow):
 					self.labelright[i+2].setText(critere[i]+": "+str(infos[i]))
 				else:
 					self.labelright[i+2].setText(critere[i]+": "+str(-infos[i]))
+
+
+
+	
+	#def retranslateUi(self):
+        #_translate = QtCore.QCoreApplication.translate
+        #self.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        #self.label.setText(_translate("MainWindow", "Votre solution optimale personnalisée, à partir d\'ici!"))
+        #self.comboBox.setItemText(0, _translate("MainWindow", "VOITURE"))
+        #self.pushButton.setText(_translate("MainWindow", "Commencer"))
+        #self.pushButton_2.setText(_translate("MainWindow", "Annuler"))
 
 
 

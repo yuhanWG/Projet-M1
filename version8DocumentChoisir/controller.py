@@ -2,9 +2,12 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 import sys
-from home import *
+#from home import *
 from mainUi import *
-from endPage import *
+#from endPage import *
+from endPage2 import *
+#05/09
+from home4 import *
 
 
 class Controller:
@@ -12,7 +15,8 @@ class Controller:
 		pass
 
 	def show_home(self):
-		self.home=Home()
+		#self.home=Home()
+		self.home=Ui_MainWindow()
 		self.home.switch_page.connect(self.show_quiz)
 		self.home.show()
 
