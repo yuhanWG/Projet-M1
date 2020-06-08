@@ -1,0 +1,7 @@
+33.0
+20.5
+3.542533756949961
+1.3244973622748133
+0.0
+quiz end: best car for you is: 1
+nb questions repondus 4

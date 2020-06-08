@@ -1,0 +1,6 @@
+cout(K)
+surface
+chambre
+toilette
+piece
+transport
